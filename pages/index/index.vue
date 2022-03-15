@@ -1,7 +1,12 @@
 <template>
   <view>
     <view class="cu-form-group margin-top">
-      <textarea type="text" v-model="q" @input="changeQ" maxlength="-1"></textarea>
+      <textarea type="text" ref="qq"
+        v-model="q"
+        @input="changeQ"
+        v-select-on-focus
+        maxlength="-1"
+        ></textarea>
       <button type="primary" @click="share">分享</button>
     </view>
     <img :src="imgData" style="width: 100%;" />
@@ -14,7 +19,7 @@
   async function nk(msg) {
     console.log(`do nk`)
     const resp = await uniCloud.callFunction({
-      name: 'hello-jimp-dev',
+      name: 'hello-jimp',
       data: {
         msg
       }
@@ -31,10 +36,21 @@
         q: '请不要回答'
       }
     },
+
     methods: {
       changeQ: _.debounce(async function () {
         this.imgData = await nk(this.q)
       }, 1000),
+
+      onFocusQ(e) {
+        console.log(`target`, e)
+        // e.target.select()
+        let node = this.$refs.qq
+        let r = document.createRange()
+        
+        r.setStart(node, 0)
+        r.setEnd(node, e.target.value.length)
+      },
 
       share() {
         const reg = /([\?&])(q=[^&]*)/g;
@@ -65,13 +81,12 @@
         })
       }
     },
+
     async onLoad() {
-      let ps = this.$route.query;
-      this.q = ps.q
+      let ps = this.$route.query
+      this.q = ps.q || '如果说十年如一日，\n那是活了十年？\n还是一天？'
 
-      this.$route.query.x = 1222
-
-      this.imgData = await nk(this.q)
+      this.changeQ()
     }
   }
 

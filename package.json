@@ -1,0 +1,22 @@
+{
+  "name": "upup",
+  "version": "1.0.0",
+  "description": "## how to change ucf if it has too many dependencies(> 10M) + install ncc(https://www.npmjs.com/package/@vercel/ncc) + change xfun-dev + goto xfun-dev folder, run `yum run compile`, then compiled file will be sent to xfun folder.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinafzy/upup.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chinafzy/upup/issues"
+  },
+  "homepage": "https://github.com/chinafzy/upup#readme",
+  "dependencies": {
+    "vue-select-on-focus": "^2.0.0"
+  }
+}

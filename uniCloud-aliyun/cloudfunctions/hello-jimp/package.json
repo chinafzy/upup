@@ -13,6 +13,6 @@
     "memorySize": 512,
     "timeout": 60,
     "path": "",
-    "runtime": "Nodejs8"
+    "runtime": "Nodejs12"
   }
 }

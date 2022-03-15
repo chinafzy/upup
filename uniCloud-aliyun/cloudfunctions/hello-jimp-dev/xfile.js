@@ -13,6 +13,11 @@ function findName(url) {
   return url2name[url] || (url2name[url] = Math.random())
 }
 
+/**
+ * build file checker.
+ * @param  {int} size: file size
+ * @param {fn} a function like check(file){}
+ */
 function buildChecker({
   size,
   checker
@@ -35,7 +40,7 @@ function buildChecker({
       if (ret) return ret;
     }
 
-    return 0
+    return 
   }
 }
 
@@ -43,7 +48,7 @@ async function realGet2(url, {
   name,
   size,
   checker,
-  timeout = 2000
+  timeout = 10000
 } = {}) {
 
   console.log(`build Promise for ${url}`)

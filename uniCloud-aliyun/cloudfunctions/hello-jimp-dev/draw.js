@@ -11,11 +11,6 @@ const {
   getNamedFnt2
 } = require('./fnts')
 
-const fs = require('fs')
-const {
-  xfile
-} = require('more')
-
 const Jimp = require('jimp')
 
 function hashMatrix(matrix, range) {
@@ -96,7 +91,7 @@ exports.draw = async function draw({
     })
   })
 
-  // canvas.write('/tmp/111.png')
+  canvas.write('/tmp/111.png')
 
   return canvas
 
