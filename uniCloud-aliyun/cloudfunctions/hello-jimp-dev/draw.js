@@ -45,10 +45,9 @@ exports.draw = async function draw({
 }) {
 
   let font_p = getNamedFnt2('ms-yahei')
-    .then(Jimp.loadFont.bind(Jimp))
-  // let font_p = Jimp.loadFont('/Users/zeyufang/Downloads/fonts/ms-yahei.fnt')
-  let humanImgs_p = getHumanImgs2()
-  let emptyImg_p = getEmptyImg2()
+    .then(Jimp.loadFont.bind(Jimp)),
+    humanImgs_p = getHumanImgs2(),
+    emptyImg_p = getEmptyImg2()
 
   let matrix = msg
     .split('\n')
@@ -58,9 +57,10 @@ exports.draw = async function draw({
     width = Math.max.apply(Math, matrix.map(line => line.length)) * block_width
   console.log(`canvas ${width} x ${height}`)
 
-  let font = await font_p
-  let humanImgs = await humanImgs_p
-  let emptyImg = await emptyImg_p
+  let font = await font_p,
+    humanImgs = await humanImgs_p,
+    emptyImg = await emptyImg_p
+
   let canvas = emptyImg.clone().resize(width, height)
 
   let matrix2 = hashMatrix(matrix, humanImgs.length)
@@ -91,7 +91,7 @@ exports.draw = async function draw({
     })
   })
 
-  canvas.write('/tmp/111.png')
+  // canvas.write('/tmp/111.png')
 
   return canvas
 

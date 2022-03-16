@@ -1,7 +1,7 @@
 "use strict";
 
 const namedFnts = require('./named-fnts')
-const xfile = require('./xfile')
+const NetFiles = require('./net-files')
 
 async function getFnt2(name, items) {
   let ps = items.map((item, idx) => {
@@ -9,7 +9,8 @@ async function getFnt2(name, items) {
     if (typeof (item) == 'string') item = {
       url: item
     }
-    return xfile.get2(item.url, {
+    
+    return NetFiles.get2(item.url, {
       name: saveName,
       ...item
     })
@@ -19,7 +20,6 @@ async function getFnt2(name, items) {
 
   return arr[0]
 }
-
 exports.getFnt2 = getFnt2
 
 async function getNamedFnt2(name) {

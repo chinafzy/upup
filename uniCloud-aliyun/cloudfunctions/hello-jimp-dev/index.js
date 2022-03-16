@@ -1,8 +1,5 @@
 'use strict';
 
-// const Imgs = require('./imgs')
-// const Jimp = require('jimp')
-
 const Draw = require('./draw')
 
 exports.main = async (event, context) => {

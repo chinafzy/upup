@@ -1,15 +1,18 @@
 <template>
   <view>
     <view class="cu-form-group margin-top">
-      <textarea type="text" ref="qq"
+      <textarea 
         v-model="q"
         @input="changeQ"
         v-select-on-focus
-        maxlength="-1"
-        ></textarea>
+        maxlength="-1"></textarea>
       <button type="primary" @click="share">分享</button>
     </view>
-    <img :src="imgData" style="width: 100%;" />
+    <img :src="imgData"
+      style="width: 100%;"
+      @click="changeQ"
+      @tap="changeQ"
+      title="点击" />
   </view>
 </template>
 
@@ -18,6 +21,7 @@
 
   async function nk(msg) {
     console.log(`do nk`)
+    uni.show
     const resp = await uniCloud.callFunction({
       name: 'hello-jimp',
       data: {
@@ -47,7 +51,7 @@
         // e.target.select()
         let node = this.$refs.qq
         let r = document.createRange()
-        
+
         r.setStart(node, 0)
         r.setEnd(node, e.target.value.length)
       },

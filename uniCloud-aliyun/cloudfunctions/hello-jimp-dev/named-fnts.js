@@ -23,6 +23,5 @@ module.exports = {
       url: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-7ead79ba-e9c6-4108-8939-f1fc77cb2d31/264f6e48-9601-462c-81bd-e4266fb666f1.png',
       size: 540446
     }
-
   ]
 }

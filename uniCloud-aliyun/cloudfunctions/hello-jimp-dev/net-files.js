@@ -1,16 +1,18 @@
 "use strict";
 
-const fs = require('fs')
+/**
+ * 
+ */
+
+const Fs = require('fs')
 
 let tmp_path = '/tmp/'
 
-let url2name = {}
-let url2p = {}
-
-console.log('xfile loaded.')
+const url2name = {},
+  url2p = {}
 
 function findName(url) {
-  return url2name[url] || (url2name[url] = Math.random())
+  return url2name[url] || (url2name[url] = encodeURIComponent(url))
 }
 
 /**
@@ -26,7 +28,7 @@ function buildChecker({
 
   if (size !== undefined) {
     checkers.push((fileName) => {
-      let size2 = fs.statSync(fileName).size;
+      let size2 = Fs.statSync(fileName).size;
       return size2 == size ? 0 : `size not match(${fileName}, ${size2} / ${size})`
     })
   }
@@ -40,7 +42,7 @@ function buildChecker({
       if (ret) return ret;
     }
 
-    return 
+    return
   }
 }
 
@@ -48,6 +50,7 @@ async function realGet2(url, {
   name,
   size,
   checker,
+  folder,
   timeout = 10000
 } = {}) {
 
@@ -55,13 +58,18 @@ async function realGet2(url, {
 
   name = name || findName(url)
 
-  const cacheName = tmp_path + name
+  if (!folder) folder = tmp_path
+
+  if (!Fs.existsSync(folder)) Fs.mkdirSync(folder)
+
+  const cacheName = fullPath(folder, name)
+
   let realChecker = buildChecker({
     size,
     checker
   })
 
-  if (fs.existsSync(cacheName)) {
+  if (Fs.existsSync(cacheName)) {
     let cc = realChecker(cacheName)
 
     if (!cc)
@@ -74,7 +82,7 @@ async function realGet2(url, {
 
   let resp = await uniCloud.httpclient.request(url, {
     timeout,
-    writeStream: fs.createWriteStream(cacheName)
+    writeStream: Fs.createWriteStream(cacheName)
   })
 
   uniCloud.logger.info(`finish downloading ${name} from ${url}`, resp.status)
@@ -95,12 +103,33 @@ async function realGet2(url, {
   throw `downloaded file ${url} does not pass. ${cc}`
 }
 
-exports.get2 = async function get2(url, opts = {}) {
+/**
+ * get one file
+ * @param {string} url
+ * @param {Object} size, name, checker, folder
+ * @return {Promise} a promise refer to then saved file. 
+ */
+exports.get2 = async (url, opts = {}) => {
   return await (url2p[url] || (url2p[url] = realGet2(url, opts)))
 }
 
-exports.getByName2 = async function getByName2(name) {
+/**
+ * set work folder 
+ * @param {string} path  
+ */
+exports.setFolder = (path) => {
+  if (!path.endsWith('/')) path += '/'
 
+  console.log(`change work folder to ${path}`)
+
+  if (!Fs.existsSync(path)) Fs.mkdirSync(path)
+
+  tmp_path = path
+}
+exports.setFolder('/tmp/net-files')
+
+function fullPath(folder, name) {
+  return folder + (folder.endsWith('/') ? '' : '/') + name
 }
 
-// export.register = func
+console.log('net-file loaded.')
