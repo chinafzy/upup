@@ -1,6 +1,8 @@
 'use strict';
 
-const Draw = require('./draw')
+const
+  Enhance = require('./enhance-promise'),
+  Draw = require('./draw')
 
 exports.main = async (event, context) => {
   //event为客户端上传的参数

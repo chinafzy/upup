@@ -12,7 +12,7 @@
       style="width: 100%;"
       @click="changeQ"
       @tap="changeQ"
-      title="点击" />
+      title="耐心等待,可以点击" />
   </view>
 </template>
 
@@ -23,7 +23,7 @@
     console.log(`do nk`)
     uni.show
     const resp = await uniCloud.callFunction({
-      name: 'hello-jimp',
+      name: 'hello-jimp-dev',
       data: {
         msg
       }

@@ -3,20 +3,21 @@
 /**
  * 
  */
-
 const Fs = require('fs')
 
-let tmp_path = '/tmp/'
-
-const url2name = {},
+const
+  url2name = {},
   url2p = {}
+
+let tmp_path = '/tmp/'
 
 function findName(url) {
   return url2name[url] || (url2name[url] = encodeURIComponent(url))
 }
 
 /**
- * build file checker.
+ * Build file checker.
+ * 
  * @param  {int} size: file size
  * @param {fn} a function like check(file){}
  */
@@ -89,7 +90,7 @@ async function realGet2(url, {
 
   if (resp.status != 200) {
     uniCloud.logger.error(`${resp.status} fail to download: ${url}`)
-    fs.rm(cacheName)
+    Fs.rm(cacheName)
     throw `download fail: ${url}`;
   }
 
@@ -98,19 +99,24 @@ async function realGet2(url, {
     return cacheName
 
   console.log(`downloaded file not match. url: ${url}; error: ${cc}`)
-  fs.rm(cacheName)
+  Fs.rm(cacheName)
 
   throw `downloaded file ${url} does not pass. ${cc}`
 }
 
 /**
  * get one file
+ * 
  * @param {string} url
- * @param {Object} size, name, checker, folder
+ * @param {Object} size, name, checker, folder, timeout
  * @return {Promise} a promise refer to then saved file. 
  */
 exports.get2 = async (url, opts = {}) => {
   return await (url2p[url] || (url2p[url] = realGet2(url, opts)))
+}
+
+function fullPath(folder, name) {
+  return folder + (folder.endsWith('/') ? '' : '/') + name
 }
 
 /**
@@ -118,18 +124,13 @@ exports.get2 = async (url, opts = {}) => {
  * @param {string} path  
  */
 exports.setFolder = (path) => {
-  if (!path.endsWith('/')) path += '/'
-
   console.log(`change work folder to ${path}`)
 
   if (!Fs.existsSync(path)) Fs.mkdirSync(path)
 
   tmp_path = path
 }
+
 exports.setFolder('/tmp/net-files')
 
-function fullPath(folder, name) {
-  return folder + (folder.endsWith('/') ? '' : '/') + name
-}
-
-console.log('net-file loaded.')
+// console.log('net-files loaded.')
