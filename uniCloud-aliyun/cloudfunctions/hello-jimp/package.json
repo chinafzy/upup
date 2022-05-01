@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "cloudfunction-config": {
-    "memorySize": 2048,
+    "memorySize": 1024,
     "timeout": 100,
     "path": "",
-    "runtime": "Nodejs12"
+    "runtime": "Nodejs14"
   }
 }
