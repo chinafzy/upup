@@ -1,43 +1,49 @@
 <template>
   <view>
     <view class="cu-form-group margin-top">
-      <textarea
+      <textarea 
         v-model="q"
         @input="changeQ"
         v-select-on-focus
         maxlength="-1"></textarea>
       <button type="primary" @click="share">分享</button>
     </view>
-    <view style="width: 100%; overflow: scroll; "
+    <img :src="imgData"
+      style="width: 100%;"
       @click="changeQ"
-      @tap="changeQ">
-      <!-- <img :src="imgData" title="耐心等待,可以点击" /> -->
-      <img v-for="(imgLine, _) in imgLines" :src="imgLine" />
-      <!-- style="width: 100%;" -->
-    </view>
+      @tap="changeQ"
+      title="耐心等待,可以点击" />
   </view>
 </template>
 
 <script>
   import _ from 'lodash'
-  import {
-    splitLines
-  } from '@/js_sdk/utils'
+
+  async function nk(msg) {
+    console.log(`do nk`)
+
+    const resp = await uniCloud.callFunction({
+      name: 'hello-jimp-dev',
+      data: {
+        msg
+      }
+    })
+    console.log('image resp:', resp)
+
+    return resp.result.data
+  }
 
   export default {
     data() {
       return {
-        imgLines: [],
+        imgData: '',
         q: '请不要回答'
       }
     },
 
     methods: {
       changeQ: _.debounce(async function () {
-        this.imgLines = splitLines(this.q.split('\n'))
-          .map(piece =>
-            `https://7ead79ba-e9c6-4108-8939-f1fc77cb2d31.bspapp.com/http/say?msg=${encodeURIComponent(piece)}&r=${Math.random()}`
-          )
+        this.imgData = await nk(this.q)
       }, 1000),
 
       onFocusQ(e) {

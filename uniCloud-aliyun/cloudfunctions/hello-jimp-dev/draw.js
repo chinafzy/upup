@@ -11,12 +11,67 @@ const {
   getNamedFnt2
 } = require('./fnts')
 
-const fs = require('fs')
-const {
-  xfile
-} = require('more')
-
 const Jimp = require('jimp')
+
+// cache and speed up.
+const
+  font_p = getNamedFnt2('ms-yahei').log3(`font1`)
+  .then(Jimp.loadFont.bind(Jimp)).log3(`font2`),
+  humanImgs_p = getHumanImgs2().log3(`humanImgs`),
+  emptyImg_p = getEmptyImg2().log3(`emptyImg`)
+
+exports.draw = async function draw({
+  msg = '写点什么好呢？\n小同学'
+}) {
+
+  let matrix = msg
+    .split('\n')
+    .map(line => line.split(''))
+
+  let height = block_height * matrix.length,
+    width = Math.max.apply(Math, matrix.map(line => line.length)) * block_width
+  console.log(`canvas ${width} x ${height}`)
+
+  let font = await font_p,
+    humanImgs = await humanImgs_p,
+    emptyImg = await emptyImg_p
+
+  let canvas = emptyImg.clone().resize(width, height)
+
+  console.log('before matrix2')
+  let matrix2 = hashMatrix(matrix, humanImgs.length)
+  console.log('matrix2', matrix2.map(row => '[' + row.join(', ') + ']'))
+
+  matrix.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      let idx = matrix2[i][j]
+      console.log(`render image-${idx} on ${i}-${j}`)
+      canvas.composite(humanImgs[idx], j * block_width, i * block_height, {
+        mode: Jimp.BLEND_MULTIPLY,
+        opacitySource: 1,
+        opacityDest: 1
+      })
+      canvas.composite(emptyImg.clone()
+        .resize(40, 40, Jimp.RESIZE_BICUBIC)
+        .print(font, 1, 1, {
+          text: cell,
+          alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+          alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+        })
+        .rotate(-40),
+        j * block_width + 29, i * block_height, {
+          mode: Jimp.BLEND_MULTIPLY,
+          opacitySource: 1,
+          opacityDest: 1
+        }
+      )
+    })
+  })
+
+  // canvas.write('/tmp/111.png')
+
+  return canvas
+}
 
 function hashMatrix(matrix, range) {
   let ret = matrix.map(row => row.map(cell => 0))
@@ -43,61 +98,4 @@ function hashMatrix(matrix, range) {
   }
 
   return ret
-}
-
-exports.draw = async function draw({
-  msg = '写点什么好呢？\n小同学'
-}) {
-
-  let font_p = getNamedFnt2('ms-yahei')
-    .then(Jimp.loadFont.bind(Jimp))
-  // let font_p = Jimp.loadFont('/Users/zeyufang/Downloads/fonts/ms-yahei.fnt')
-  let humanImgs_p = getHumanImgs2()
-  let emptyImg_p = getEmptyImg2()
-
-  let matrix = msg
-    .split('\n')
-    .map(line => line.split(''))
-
-  let height = block_height * matrix.length,
-    width = Math.max.apply(Math, matrix.map(line => line.length)) * block_width
-  console.log(`canvas ${width} x ${height}`)
-
-  let font = await font_p
-  let humanImgs = await humanImgs_p
-  let emptyImg = await emptyImg_p
-  let canvas = emptyImg.clone().resize(width, height)
-
-  let matrix2 = hashMatrix(matrix, humanImgs.length)
-  console.log('matrix2', matrix2.map(row => '[' + row.join(', ') + ']'))
-
-  matrix.forEach((row, i) => {
-    row.forEach((cell, j) => {
-      let idx = matrix2[i][j]
-      console.log(`render image: ${idx}`)
-      canvas.composite(humanImgs[idx], j * block_width, i * block_height, {
-        mode: Jimp.BLEND_MULTIPLY,
-        opacitySource: 1,
-        opacityDest: 1
-      })
-      canvas.composite(emptyImg.clone().resize(40, 40, Jimp.RESIZE_BICUBIC) // 
-        .print(font, 1, 1, {
-          text: cell,
-          alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-          alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-        })
-        .rotate(-40),
-        j * block_width + 29, i * block_height, {
-          mode: Jimp.BLEND_MULTIPLY,
-          opacitySource: 1,
-          opacityDest: 1
-        }
-      )
-    })
-  })
-
-  // canvas.write('/tmp/111.png')
-
-  return canvas
-
 }
