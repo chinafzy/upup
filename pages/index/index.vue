@@ -20,7 +20,9 @@
 
 <script>
   import _ from 'lodash'
-  import {splitLines} from '@/js_sdk/utils'
+  import {
+    splitLines
+  } from '@/js_sdk/utils'
 
   export default {
     data() {
@@ -31,7 +33,7 @@
     },
 
     methods: {
-      changeQ: _.debounce(async function () {        
+      changeQ: _.debounce(async function () {
         this.imgLines = splitLines(this.q.split('\n'))
           .map(piece =>
             `https://7ead79ba-e9c6-4108-8939-f1fc77cb2d31.bspapp.com/http/say?msg=${encodeURIComponent(piece)}&r=${Math.random()}`
@@ -85,7 +87,6 @@
       this.changeQ()
     }
   }
-
 
 </script>
 

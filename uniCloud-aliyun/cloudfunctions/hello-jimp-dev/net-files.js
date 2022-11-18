@@ -11,6 +11,10 @@ const
 
 let tmp_path = '/tmp/'
 
+/**
+ * 
+ * @param {Object} url
+ */
 function findName(url) {
   return url2name[url] || (url2name[url] = encodeURIComponent(url))
 }
